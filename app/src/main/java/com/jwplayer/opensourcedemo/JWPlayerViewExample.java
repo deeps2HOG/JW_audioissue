@@ -14,7 +14,13 @@ import android.widget.TextView;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
+import com.longtailvideo.jwplayer.media.ads.Ad;
+import com.longtailvideo.jwplayer.media.ads.AdBreak;
+import com.longtailvideo.jwplayer.media.ads.AdSource;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener {
 
@@ -59,12 +65,28 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
 
 		// Load a media source
-		PlaylistItem pi = new PlaylistItem.Builder()
-				.file("http://www.hogcdn.com/delivery/hls2/OMSHIVAOMSHIVA/OMSHIVAOMSHIVA_master.m3u8?hdnts=exp=1495329783~acl=/*~hmac=1f367f68ab0cf68f1041b62bd65cc7f40c7151269da421791ba1ab3707f90cce")
+		PlaylistItem video = new PlaylistItem.Builder()
+				.file("http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8")
 				.title("BipBop")
 				.description("A video player testing video.")
 				.build();
-		mPlayerView.load(pi);
+
+        // Create advertising schedule
+        List<AdBreak> adSchedule = new ArrayList<AdBreak>();
+
+        Ad ad = new Ad(AdSource.VAST, "https://housefgood.engine.adglare.net/?782956858");
+        AdBreak adBreak = new AdBreak("pre", ad);
+
+        adSchedule.add(adBreak);
+
+        // Set advertising schedule to your video
+        video.setAdSchedule(adSchedule);
+
+
+
+
+
+        mPlayerView.load(video);
 
 		// Get a reference to the CastManager
 		mCastManager = CastManager.getInstance();
